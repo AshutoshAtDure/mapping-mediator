@@ -77,8 +77,6 @@ exports.constructOpenhimResponse = (ctx, responseTimestamp) => {
     return
   }
 
-  // OpenHIM header not explicity set in response header
-  // Manually set OpenHIM header for processing
   ctx.response.type = 'application/json+openhim'
 
   if (response) {

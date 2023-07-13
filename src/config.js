@@ -8,18 +8,16 @@ exports.getConfig = function () {
     logLevel: process.env.LOG_LEVEL || 'info',
     enableLogging: parseStringToBoolean(process.env.ENABLE_LOGGING, true),
     mongoUrl:
-      process.env.MONGO_URL ||
-      'mongodb://localhost:27017,localhost:27018,localhost:27019/mapping-mediator?replicaSet=mapper-mongo-set',
+      'mongodb://localhost:27017/mapping-mediator',
     openhim: Object.freeze({
-      apiURL: process.env.OPENHIM_URL || 'https://localhost:8080',
-      username: process.env.OPENHIM_USERNAME || 'root@openhim.org',
-      password: process.env.OPENHIM_PASSWORD || 'openhim-password',
-      trustSelfSigned: parseStringToBoolean(
-        process.env.TRUST_SELF_SIGNED,
+      apiURL: 'https://13.95.166.46:8080',
+      username: 'root@openhim.org',
+      password: 'root@duretech',
+      trustSelfSigned: 
         true
-      ),
-      register: parseStringToBoolean(process.env.OPENHIM_REGISTER, true),
-      urn: process.env.MEDIATOR_URN || 'urn:mediator:generic_mapper'
+      ,
+      register: false,
+      urn: 'urn:mediator:generic_mapper'
     }),
     parser: Object.freeze({
       limit: process.env.PARSER_LIMIT || '1mb',

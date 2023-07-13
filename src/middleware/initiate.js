@@ -144,6 +144,7 @@ exports.initiateContextMiddleware = () => async (ctx, next) => {
     : uuid.v4()
 
   const {endpoint, urlParams} = getEndpointByPath(ctx.request.path)
+ 
 
   if (!endpoint) {
     logger.error(`Unknown Endpoint: ${ctx.request.path}`)
