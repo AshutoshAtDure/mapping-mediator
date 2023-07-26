@@ -3,6 +3,7 @@
 require('dotenv').config()
 const koa = require('koa')
 const koaRouter = require('koa-router')
+const cors = require('kcors')
 const {DateTime} = require('luxon')
 
 const config = require('./config').getConfig()
@@ -11,12 +12,14 @@ const logger = require('./logger')
 const openhim = require('./openhim')
 
 const {createAPIRoutes} = require('./endpointRoutes')
+const {transferApiRoutes} = require('./dataTransferRoutes')
 const {createMiddlewareRoute} = require('./routes')
 
 const app = new koa()
 const router = new koaRouter()
 
 createAPIRoutes(router)
+transferApiRoutes(router)
 createMiddlewareRoute(router)
 
 const millisecondsAtStart = DateTime.utc().ts
@@ -30,6 +33,8 @@ router.get('/uptime', (ctx, next) => {
   next()
 })
 
+
+app.use(cors({allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH', credentials: true}))
 app.use(router.routes()).use(router.allowedMethods())
 
 if (!module.parent) {
