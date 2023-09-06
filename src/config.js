@@ -11,12 +11,14 @@ exports.getConfig = function () {
       'mongodb://localhost:27017/mapping-mediator',
     openhim: Object.freeze({
       apiURL: 'https://13.95.166.46:8080',
+      // apiURL: 'https://127.0.0.1:8080',
       username: 'root@openhim.org',
       password: 'root@duretech',
+      // password: 'ashu@dure',
       trustSelfSigned: 
         true
       ,
-      register: false,
+      register: true,
       urn: 'urn:mediator:generic_mapper'
     }),
     parser: Object.freeze({
