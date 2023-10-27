@@ -142,11 +142,12 @@ exports.initiateContextMiddleware = () => async (ctx, next) => {
   const requestUUID = ctx.request.headers[OPENHIM_TRANSACTION_HEADER]
     ? ctx.request.headers[OPENHIM_TRANSACTION_HEADER]
     : uuid.v4()
-
+  console.log(ctx.request.path)
+  
   const {endpoint, urlParams} = getEndpointByPath(ctx.request.path)
  
 
-  if (!endpoint) {
+  if (!endpoint && ctx.request.path !== '/saveDraft') {
     logger.error(`Unknown Endpoint: ${ctx.request.path}`)
 
     ctx.response.type = 'application/json'

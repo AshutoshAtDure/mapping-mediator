@@ -11,9 +11,10 @@ exports.createEndpoint = body => {
   return endpoint.save({checkKeys: false})
 }
 
+
 exports.readEndpoint = endpointId => {
-  const objectId = new ObjectId(endpointId)
-  return EndpointModel.findById(objectId)
+  const subscriptionid = endpointId
+  return EndpointModel.find({ 'subscriptionid': subscriptionid})
 }
 
 exports.readEndpoints = queryParams => {

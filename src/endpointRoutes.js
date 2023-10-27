@@ -8,6 +8,8 @@ const {handleServerError} = require('./util')
 
 const endpointServices = require('./db/services/endpoints')
 
+const draftServices = require('./db/services/drafts')
+
 const KoaBodyParser = () => async (ctx, next) => {
   try {
     const body = await rawBodyParser(ctx.req)
@@ -48,6 +50,34 @@ const createEndpointRoute = router => {
   })
 }
 
+const saveDraft = router => {
+  router.post('/saveDraft', KoaBodyParser(), async (ctx, next) => {
+    const failureMsg = 'Save draft failed:'
+
+    try {
+      console.log('came')
+      await draftServices
+        .saveDraft(ctx.request.body)
+        .then(result => {
+          ctx.status = 200
+          ctx.body = result
+          console.log(result)
+          logger.info(
+            `Draft has been saved successfully!`
+          )
+        
+        })
+        .catch(error => {
+          ctx.statusCode = 400
+          console.log(error)
+        
+        })
+    } catch (error) {
+      
+    }
+  })
+}
+
 const readEndpointRoute = router => {
   router.get('/endpoints/:endpointId', async (ctx, next) => {
     const failureMsg = 'Retrieving of endpoint failed: '
@@ -55,9 +85,9 @@ const readEndpointRoute = router => {
     try {
       const endpointId = ctx.params.endpointId
 
-      if (!endpointServices.validateEndpointId(endpointId)) {
-        throw Error('Endpoint ID supplied in url is invalid')
-      }
+      // if (!endpointServices.validateEndpointId(endpointId)) {
+      //   throw Error('Endpoint ID supplied in url is invalid')
+      // }
 
       await endpointServices
         .readEndpoint(endpointId)
@@ -220,4 +250,5 @@ exports.createAPIRoutes = router => {
   readEndpointsRoute(router)
   updateEndpointRoute(router)
   deleteEndpointRoute(router)
+  saveDraft(router)
 }

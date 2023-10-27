@@ -6,6 +6,36 @@ const logger = require('../logger')
 const {OPENHIM_TRANSACTION_HEADER} = require('../constants')
 const {createOrchestration} = require('../orchestrations')
 
+function deepObjectComparison(firstObj, secondObj) {
+  const result = {};
+
+  for (const key in firstObj) {
+    const cleanKey = key.replace('requestBody.', ''); // Remove "requestBody" prefix
+    if (keyExistsDeep(cleanKey, secondObj)) {
+      result[key] = firstObj[key];
+    }
+  }
+
+  return result;
+}
+
+function keyExistsDeep(key, obj) {
+  const keys = key.split('.').map(k => k.replace(/\[\d+\]/g, ''));
+  let currentObj = obj;
+
+  for (const k of keys) {
+    if (Array.isArray(currentObj) && currentObj[0][k] !== undefined) {
+      currentObj = currentObj[0][k];
+    } else if (currentObj[k] !== undefined) {
+      currentObj = currentObj[k];
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 const createMappedObject = ctx => {
   if (
     !ctx.state.metaData.inputMapping ||
@@ -27,11 +57,14 @@ const createMappedObject = ctx => {
 
   const output = {}
   const mappingStartTimestamp = new Date()
-
+  let inputTransforms = ctx.state.metaData.inputMapping
+  // console.log(inputTransforms, ctx.state.allData.requestBody, 'called')
+  const filteredObject = deepObjectComparison(inputTransforms, dataToBeMapped.requestBody);
+  console.log(filteredObject, 'came', dataToBeMapped)
   try {
     Object.assign(
       output,
-      objectMapper(dataToBeMapped, ctx.state.metaData.inputMapping)
+      objectMapper(dataToBeMapped, filteredObject)
     )
   } catch (error) {
     logger.error(

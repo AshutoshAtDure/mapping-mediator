@@ -7,8 +7,9 @@ const FormData = require('form-data');
 const logger = require('./logger')
 const axios = require('axios')
 const fs = require('fs');
+const config = require('./config').getConfig()
 
-
+console.log(`${config.apiBaseUrl}/service/dhis/consumeDhisDataScheduled`)
 const {handleServerError} = require('./util')
 
 
@@ -36,11 +37,11 @@ const consumeDhisData = router => {
     }
 
     const options = {
-      url: `https://1dataconnect.com/service/dhis/consumeDhisDataScheduled`,
+      url: `${config.apiBaseUrl}/service/dhis/consumeDhisDataScheduled`,
       method: 'post',
       data: reqparams
     }
-
+   console.log(options)
     await new Promise(resolve => {
       axios(options)
         .then((res) => {
@@ -70,7 +71,7 @@ try {
   }
 
   const options = {
-    url: `https://1dataconnect.com/service/dhis/processDhisFileUpload`,
+    url: `${config.apiBaseUrl}/service/dhis/processDhisFileUpload`,
     method: 'post',
     data: reqparams
   }

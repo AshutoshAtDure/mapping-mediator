@@ -9,7 +9,7 @@ const {
   MIDDLEWARE_PATH_REGEX
 } = require('../../constants')
 
-const endpointSchema = new mongoose.Schema(
+const draftSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -29,9 +29,6 @@ const endpointSchema = new mongoose.Schema(
     isDhis: {
       type: Boolean,
       required: true,
-      index: {
-        unique: true
-      }
     },
     channel: {},
     conversion: {},
@@ -93,41 +90,7 @@ const endpointSchema = new mongoose.Schema(
   }
 )
 
-endpointSchema.pre('save', async function (next) {
-  var endpoint = this
 
-  if (!endpoint.isModified('endpoint')) return next()
+const DraftModel = mongoose.model('draft', draftSchema)
 
-  if (
-    endpoint.endpoint.pattern.match(/\/:\//) ||
-    endpoint.endpoint.pattern[endpoint.endpoint.pattern.length - 1] == ':'
-  ) {
-    return next(
-      Error(
-        'Invalid url parameters specified in pattern, url parameter specification format is "/:<PARAMETER_NAME>"'
-      )
-    )
-  }
-
-  const regex = /:[^/]\w+/
-  const endpointMatchingRegex = new RegExp(
-    `^${endpoint.endpoint.pattern.replace(regex, regex.source)}$`
-  )
-
-  await EndpointModel.find({
-    'endpoint.pattern': {$regex: endpointMatchingRegex}
-  }).then(result => {
-    if (result.length > 0) {
-      const error = new Error(
-        `Duplicate error: regex created from endpoint pattern ${endpoint.endpoint.pattern} for matching requests already exists`
-      )
-      return next(error)
-    }
-
-    return next()
-  })
-})
-
-const EndpointModel = mongoose.model('endpoint', endpointSchema)
-
-module.exports = EndpointModel
+module.exports = DraftModel
