@@ -24,14 +24,17 @@ const endpointSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    resourceType: {},
-    programType:  {},
-    isDhis: {
-      type: Boolean,
+    resourceType: {
+      type: String,
       required: true,
       index: {
         unique: true
       }
+    },
+    programType:  {},
+    isDhis: {
+      type: Boolean,
+      required: true,
     },
     channel: {},
     conversion: {},
@@ -51,6 +54,7 @@ const endpointSchema = new mongoose.Schema(
         default: DEFAULT_ENDPOINT_METHOD
       }
     },
+    secondarymapping: mongoose.Schema.Types.ObjectId,
     transformation: {
       input: {
         type: String,

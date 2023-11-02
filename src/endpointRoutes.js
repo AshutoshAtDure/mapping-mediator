@@ -122,12 +122,42 @@ const readEndpointRoute = router => {
 const readEndpointsRoute = router => {
   router.get('/endpoints', async (ctx, next) => {
     const failureMsg = 'Retrieving of endpoints failed: '
-
+    
     try {
       const queryParams = ctx.request.query
 
       await endpointServices
         .readEndpoints(queryParams)
+        .then(endpoints => {
+          ctx.status = 200
+          ctx.body = endpoints
+          logger.debug(
+            `Retrieved ${
+              endpoints.length
+            } Endpoints matching query param: ${JSON.stringify(queryParams)}`
+          )
+          next()
+        })
+        .catch(error => {
+          handleServerError(ctx, failureMsg, error, logger)
+          next()
+        })
+    } catch (error) {
+      handleServerError(ctx, failureMsg, error, logger)
+      next()
+    }
+  })
+}
+
+const readDraftsRoute = router => {
+  router.get('/drafts', async (ctx, next) => {
+    const failureMsg = 'Retrieving of drafts failed: '
+    
+    try {
+      const queryParams = ctx.request.query
+
+      await draftServices
+        .readDrafts(queryParams)
         .then(endpoints => {
           ctx.status = 200
           ctx.body = endpoints
@@ -251,4 +281,5 @@ exports.createAPIRoutes = router => {
   updateEndpointRoute(router)
   deleteEndpointRoute(router)
   saveDraft(router)
+  readDraftsRoute(router)
 }

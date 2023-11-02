@@ -21,6 +21,7 @@ exports.getConfig = function () {
       register: true,
       urn: 'urn:mediator:generic_mapper'
     }),
+    apiBaseUrl: 'https://13.95.166.46:8080',
     parser: Object.freeze({
       limit: process.env.PARSER_LIMIT || '1mb',
       xmlOptions: {

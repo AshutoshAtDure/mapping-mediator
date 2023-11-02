@@ -13,3 +13,9 @@ exports.saveDraft = body => {
   return draft.save({checkKeys: false})
 }
 
+
+exports.readDrafts = queryParams => {
+    // console.log('query', queryParams)
+    return DraftModel.find(queryParams)
+  }
+

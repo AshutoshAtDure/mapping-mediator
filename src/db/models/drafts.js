@@ -90,6 +90,23 @@ const draftSchema = new mongoose.Schema(
   }
 )
 
+draftSchema.pre('find', async function (next) {
+    var endpoint = this
+    console.log(endpoint)
+    await DraftModel.find({
+      'endpoint.pattern': endpoint.pattern
+    }).then(result => {
+      if (result.length > 0) {
+        const error = new Error(
+          `Duplicate error: regex created from endpoint pattern ${endpoint.endpoint.pattern} for matching requests already exists`
+        )
+        return next(error)
+      }
+  
+      return next()
+    })
+  })
+
 
 const DraftModel = mongoose.model('draft', draftSchema)
 
